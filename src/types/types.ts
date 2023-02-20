@@ -1,8 +1,12 @@
 // Each event will belong to one of the following types
 type TEventType = 'workshop' | 'activity' | 'tech_talk'
-type TPermission = 'public' | 'private'
+// type TPermission = 'public' | 'private'
+export enum TPermission {
+  PUBLIC = 'public',
+  PRIVATE = 'private'
+}
 
-type TSpeaker = {
+export type TSpeaker = {
   name: string
 }
 

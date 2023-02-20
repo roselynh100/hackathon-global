@@ -3,17 +3,17 @@ import { Accordion, Container, Heading, Text } from '@chakra-ui/react'
 
 import LoginModal from './components/LoginModal'
 import EventAccordion from './components/EventAccordion'
-import { TEvent } from './types/types'
+import { TEvent, TPermission } from './types/types'
 
 function App() {
 
   const [events, setEvents] = useState([])
+  const userLoggedIn = false
 
   useEffect(() => {
     const loadEvents = async () => {
-      console.log('loading events')
       const response = await fetch('https://api.hackthenorth.com/v3/events')
-      setEvents(await response.json())
+      setEvents((await response.json()).sort((a: TEvent, b: TEvent) => a.start_time - b.start_time))
     }
     loadEvents()
   }, [])
@@ -26,7 +26,9 @@ function App() {
       <Text fontSize='xl' mb={10}>What's going on?</Text>
       <Accordion allowMultiple>
         {events?.map((event: TEvent, i) => (
-          <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} />
+          userLoggedIn ?
+            <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} />
+            : event.permission === TPermission.PUBLIC && <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} public_url={event.public_url} private_url={event.private_url} />
         ))}
       </Accordion>
     </Container>
