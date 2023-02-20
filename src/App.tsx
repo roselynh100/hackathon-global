@@ -1,17 +1,35 @@
-import { Accordion } from '@chakra-ui/react'
+import { useState, useEffect } from 'react'
+import { Accordion, Container, Heading, Text } from '@chakra-ui/react'
 
 import LoginModal from './components/LoginModal'
 import EventAccordion from './components/EventAccordion'
+import { TEvent } from './types/types'
 
 function App() {
+
+  const [events, setEvents] = useState([])
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      console.log('loading events')
+      const response = await fetch('https://api.hackthenorth.com/v3/events')
+      setEvents(await response.json())
+    }
+    loadEvents()
+  }, [])
+
   return (
-    <>
-      <Accordion allowMultiple>
-        <EventAccordion title={'Title Here'} description={'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi porttitor malesuada nisl, sit amet dapibus nibh imperdiet dapibus. Praesent lacinia, nisl quis ornare molestie, est felis cursus nisl, nec efficitur libero diam et tellus. Donec quis libero interdum lacus placerat aliquam id et tellus. Vestibulum luctus eleifend velit, sit amet dapibus nunc posuere ut. Ut turpis lorem, viverra vitae est finibus, fermentum sodales urna. Morbi posuere tortor id eros consequat, sed semper nisi dapibus. Morbi bibendum est mi, pellentesque molestie justo faucibus faucibus. Mauris commodo, quam vitae rutrum laoreet, mi tellus aliquam velit, at finibus mi ex vel dui. Etiam vitae convallis sapien. Curabitur dictum, lectus ac finibus rhoncus, tellus ligula lacinia libero, ac egestas risus velit vitae erat. Fusce commodo leo ornare hendrerit pellentesque.'} activity={'workshop'} date={'date'} />
-        <EventAccordion />
-      </Accordion>
+    <Container maxW='5xl'>
       <LoginModal />
-    </>
+      <Heading size='3xl' textAlign='center' mt={36}>Hack the North</Heading>
+      <Heading size='xl' textAlign='center' my={10}>— January 15-17, 2021 —</Heading>
+      <Text fontSize='xl' mb={10}>What's going on?</Text>
+      <Accordion allowMultiple>
+        {events?.map((event: TEvent, i) => (
+          <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} />
+        ))}
+      </Accordion>
+    </Container>
   )
 }
 
