@@ -1,4 +1,4 @@
-import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Button, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 
 import { TSpeaker } from '../types/types'
@@ -37,8 +37,9 @@ const EventAccordion = ({ name, description, event_type, start_time, speakers, p
           <Code variant='subtle'>{event_type}</Code>
           <Spacer />
           <Tooltip label={timeUntil(start_time)}>
-            <Text>{normalTime(start_time)}</Text>
+            <Text mr={4}>{normalTime(start_time)}</Text>
           </Tooltip>
+          <Checkbox size='lg' />
         </Flex>
       </AccordionButton>
       <AccordionPanel>

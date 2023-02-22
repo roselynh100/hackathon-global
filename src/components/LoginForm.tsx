@@ -1,7 +1,11 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Button, FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, ModalBody, ModalFooter, Stack } from '@chakra-ui/react'
 
+import UserContext from '../contexts/UserContext'
+
 const LoginForm = ({ setClose, toggleSetClose }: {setClose?: boolean, toggleSetClose: (value: boolean) => void}) => {
+  const { user, setUser } = useContext(UserContext)
+
   const [show, setShow] = useState<boolean>(false)
   const handleClick = () => setShow(!show)
 
@@ -23,11 +27,9 @@ const LoginForm = ({ setClose, toggleSetClose }: {setClose?: boolean, toggleSetC
       console.log('Bad! Throwing error!')
       return
     }
-    setFormData({ username: '', password: '' })
-    setTimeout(() => toggleSetClose(true), 1000)
+    setTimeout(() => setUser({ username: formData.username, loggedIn: true }), 1000)
     console.log('Logging in!')
     }
-    console.log('username:', process.env.USERNAME)
 
   return (
     <>
