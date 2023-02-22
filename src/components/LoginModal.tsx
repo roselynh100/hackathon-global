@@ -11,27 +11,21 @@ interface ModalProps {
 const LoginModal = ({ header, subheader }: ModalProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [setClose, toggleSetClose] = useState<boolean>(false)
-
-  if (setClose) {
-    onClose()
-  }
-
   return (
     <>
     <Flex>
       <Spacer />
       <Button onClick={onOpen}>Log In</Button>
     </Flex>
-      <Modal isOpen={isOpen} onClose={onClose} size='md'>
+      <Modal isOpen={isOpen} onClose={onClose} size='md' isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent py={5} px={2}>
           <ModalCloseButton />
           <ModalHeader mt={5}>
-            <Heading fontSize='3xl' textAlign='center'>{header}</Heading>
-            <Text fontSize='md' textAlign='center' mt={2}>{subheader}</Text>
+            <Heading fontSize='3xl' textAlign='center' color='teal'>{header}</Heading>
+            <Text fontSize='md' textAlign='center' mt={2} mb={5}>{subheader}</Text>
           </ModalHeader>
-          <LoginForm setClose={setClose} toggleSetClose={toggleSetClose} />
+          <LoginForm />
         </ModalContent>
       </Modal>
     </>

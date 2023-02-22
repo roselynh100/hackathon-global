@@ -13,7 +13,7 @@ interface EventAccordionProps {
   private_url: string
 }
 
-const EventAccordion = ({ name, description, event_type, start_time, speakers, public_url, private_url }: EventAccordionProps) => {
+const EventAccordion = ({ name, description, event_type, start_time, public_url, private_url }: EventAccordionProps) => {
   const normalTime = (time: number) => {
     return dayjs.unix(time/1000).format('ddd, DD MMM YYYY @ hh:mm A')
   }
@@ -39,14 +39,14 @@ const EventAccordion = ({ name, description, event_type, start_time, speakers, p
           <Tooltip label={timeUntil(start_time)}>
             <Text mr={4}>{normalTime(start_time)}</Text>
           </Tooltip>
-          <Checkbox size='lg' />
+          <Checkbox size='lg' colorScheme='teal' />
         </Flex>
       </AccordionButton>
       <AccordionPanel>
         <Stack ml={9}>
           {/* <Text>{speakers?.map(speaker) => speaker.name}</Text> */}
           <Text mb={3}>{description}</Text>
-          <Button variant='link' w='fit-content'><Link href={public_url ?? private_url}>View Event</Link></Button>
+          <Button variant='link' w='fit-content' colorScheme='teal'><Link href={public_url ?? private_url}>View Event</Link></Button>
         </Stack>
       </AccordionPanel>
     </AccordionItem>

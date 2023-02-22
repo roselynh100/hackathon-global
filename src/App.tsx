@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
-import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuList, MenuItem, Spacer, Text } from '@chakra-ui/react'
+import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuList, MenuItem, Spacer, Text, Tooltip } from '@chakra-ui/react'
+import { motion } from 'framer-motion'
 
 import './styles/App.css'
 import LoginModal from './components/LoginModal'
@@ -41,18 +42,22 @@ function App() {
   return (
     <>
       <Container maxW='100%' bg='#509594'>
-        <Container maxW='5xl' pt={10}>
+        <Container maxW='5xl' pt={10} cursor='default'>
           {user.loggedIn ?
             <UserMenu /> :
-            <LoginModal header='Hackathon Global' subheader='The place for all your Hackathon needs!' />
+            <LoginModal header='Hackathon Global' subheader='The place for all your hackathon needs!' />
           }
           <TypingHeader text='Hack the North' />
-          <Heading size='xl' textAlign='center' mt={10} color='white'>— January 15-17, 2021 —</Heading>
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <Heading size='xl' textAlign='center' mt={10} color='white'>— January 15-17, 2021 —</Heading>
+          </motion.div>
         </Container>
       </Container>
       <Box className='spacer layer1'/>
       <Container maxW='5xl'>
-        <Text fontSize='xl' mb={7}>What's going on?</Text>
+        <Tooltip label='Log in to view more events!' placement='right'>
+          <Text fontSize='2xl' fontWeight={600} mb={7} w='fit-content' cursor='default'>What's going on?</Text>
+        </Tooltip>
         <Flex mb={5}>
           <Menu>
             <MenuButton as={Button}>

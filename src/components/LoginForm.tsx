@@ -3,7 +3,7 @@ import { Button, FormControl, FormErrorMessage, Input, InputGroup, InputRightEle
 
 import UserContext from '../contexts/UserContext'
 
-const LoginForm = ({ setClose, toggleSetClose }: {setClose?: boolean, toggleSetClose: (value: boolean) => void}) => {
+const LoginForm = () => {
   const { user, setUser } = useContext(UserContext)
 
   const [show, setShow] = useState<boolean>(false)
@@ -50,7 +50,7 @@ const LoginForm = ({ setClose, toggleSetClose }: {setClose?: boolean, toggleSetC
         </FormControl>
       </ModalBody>
       <ModalFooter>
-        <Button onClick={handleSubmit} isLoading={loading}>
+        <Button onClick={handleSubmit} isLoading={loading} colorScheme='teal'>
           Log In
         </Button>
       </ModalFooter>
