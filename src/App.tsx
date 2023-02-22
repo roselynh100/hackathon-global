@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Accordion, Button, Container, Heading, Text } from '@chakra-ui/react'
 
 import LoginModal from './components/LoginModal'
 import EventAccordion from './components/EventAccordion'
 import { TEvent, TPermission } from './types/types'
+import UserContext from './contexts/UserContext'
 
 function App() {
 
+  const {user, setUser} = useContext(UserContext)
+
   const [events, setEvents] = useState<TEvent[]>([])
-  const [loggedIn, setLoggedIn] = useState<boolean>(false)
 
   useEffect(() => {
     // loads events from api
@@ -28,12 +30,12 @@ function App() {
       <Text fontSize='xl' mb={10}>What's going on?</Text>
       <Accordion allowMultiple>
         {events?.map((event: TEvent, i) => (
-          loggedIn ?
+          user.loggedIn ?
             <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} />
             : event.permission === TPermission.PUBLIC && <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} public_url={event.public_url} private_url={event.private_url} />
         ))}
       </Accordion>
-      <Button onClick={() => setLoggedIn(!loggedIn)}>change views</Button>
+      <Button onClick={() => setUser({...user, loggedIn: !user.loggedIn})}>change views</Button>
     </Container>
   )
 }

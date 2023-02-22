@@ -2,11 +2,7 @@ import { useState } from 'react'
 import UserContext from './UserContext'
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const BaseUser = {
-    username: null,
-    loggedIn: false
-  }
-  const [user, setUser] = useState(BaseUser)
+  const [user, setUser] = useState({ username: '', loggedIn: false })
   
   return (
     <UserContext.Provider value={{ user, setUser }}>
