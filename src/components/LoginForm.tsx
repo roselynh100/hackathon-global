@@ -28,7 +28,6 @@ const LoginForm = ({ setClose, toggleSetClose }: {setClose?: boolean, toggleSetC
     console.log('Logging in!')
     }
     console.log('username:', process.env.USERNAME)
-  }
 
   return (
     <>

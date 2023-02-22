@@ -11,8 +11,10 @@ function App() {
   const [loggedIn, setLoggedIn] = useState<boolean>(false)
 
   useEffect(() => {
+    // loads events from api
     const loadEvents = async () => {
       const response = await fetch('https://api.hackthenorth.com/v3/events')
+      // orders events by start time
       setEvents((await response.json()).sort((a: TEvent, b: TEvent) => a.start_time - b.start_time))
     }
     loadEvents()

@@ -30,3 +30,13 @@ export type TEvent = {
 
 // What the endpoints will return
 export type TEndpointResponse = TEvent | TEvent[]
+
+// User interface
+export interface User {
+  username: string | null
+  loggedIn: boolean
+  setUser: React.Dispatch<React.SetStateAction<{
+    username: null;
+    loggedIn: boolean;
+  }>>
+}
