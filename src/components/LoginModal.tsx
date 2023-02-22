@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Heading, Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, useDisclosure } from '@chakra-ui/react'
+import { Button, Flex, Heading, Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spacer, Text, useDisclosure } from '@chakra-ui/react'
 
 import LoginForm from './LoginForm'
 
@@ -19,7 +19,10 @@ const LoginModal = ({ header, subheader }: ModalProps) => {
 
   return (
     <>
+    <Flex>
+      <Spacer />
       <Button onClick={onOpen}>Log In</Button>
+    </Flex>
       <Modal isOpen={isOpen} onClose={onClose} size='md'>
         <ModalOverlay />
         <ModalContent>
