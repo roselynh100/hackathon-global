@@ -40,3 +40,9 @@ export interface User {
     loggedIn: boolean;
   }>>
 }
+
+export enum SortingType {
+  NAME = 'name',
+  ACTIVITY = 'activity',
+  DATE = 'date'
+}
