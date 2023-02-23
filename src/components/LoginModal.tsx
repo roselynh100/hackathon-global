@@ -1,21 +1,21 @@
-import { useState } from 'react'
-import { Button, Flex, Heading, Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spacer, Text, useDisclosure } from '@chakra-ui/react'
-
-import LoginForm from './LoginForm'
+import { Button, Flex, Heading, Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spacer, Text } from '@chakra-ui/react'
 
 interface ModalProps {
-  header: string
+  openButton: string
+  header?: string
   subheader?: string
+  children?: React.ReactNode
+  isOpen: boolean
+  onOpen: () => void
+  onClose: () => void
 }
 
-const LoginModal = ({ header, subheader }: ModalProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
+const LoginModal = ({ openButton, header, subheader, children, isOpen, onOpen, onClose }: ModalProps) => {
   return (
     <>
       <Flex>
         <Spacer />
-        <Button onClick={onOpen}>Log In</Button>
+        <Button onClick={onOpen}>{openButton}</Button>
       </Flex>
       <Modal isOpen={isOpen} onClose={onClose} size='md' isCentered>
         <ModalOverlay />
@@ -25,7 +25,7 @@ const LoginModal = ({ header, subheader }: ModalProps) => {
             <Heading fontSize='3xl' textAlign='center' color='teal'>{header}</Heading>
             <Text fontSize='md' textAlign='center' mt={2} mb={5}>{subheader}</Text>
           </ModalHeader>
-          <LoginForm onClose={onClose} />
+          {children}
         </ModalContent>
       </Modal>
     </>

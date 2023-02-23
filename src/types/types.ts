@@ -1,5 +1,10 @@
 // Each event will belong to one of the following types
-type TEventType = 'workshop' | 'activity' | 'tech_talk'
+export enum TEventType {
+  WORKSHOP = 'workshop',
+  ACTIVITY = 'activity',
+  TECH_TALK = 'tech_talk'
+}
+// type TEventType = 'workshop' | 'activity' | 'tech_talk'
 // type TPermission = 'public' | 'private'
 export enum TPermission {
   PUBLIC = 'public',
@@ -39,10 +44,4 @@ export interface User {
     username: null;
     loggedIn: boolean;
   }>>
-}
-
-export enum SortingType {
-  NAME = 'name',
-  ACTIVITY = 'activity',
-  DATE = 'date'
 }

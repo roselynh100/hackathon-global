@@ -1,4 +1,4 @@
-import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip, useAccordionItemState, useMediaQuery } from '@chakra-ui/react'
+import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip, useAccordionItemState, useMediaQuery, Wrap, WrapItem } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import { TEvent } from '../types/types'
 
@@ -19,7 +19,7 @@ const EventAccordion = ({ id, name, description, event_type, start_time, public_
 
   const CloseAccordion = ({ children, relatedId }: { children: React.ReactNode, relatedId: number }) => {
     const { onClose } = useAccordionItemState()
-    return <Button variant='link' onClick={() => {
+    return <Button variant='link' mr={4} onClick={() => {
       onClose()
       doSomething(relatedId.toString())
     }}>{children}</Button>
@@ -42,14 +42,14 @@ const EventAccordion = ({ id, name, description, event_type, start_time, public_
     return dayjs.unix(time/1000).format('DD/MM/YYYY hh:mm A')
   }
 
-  const timeUntil = (time: number) => { // TODO: alternate between hours and days depending on time elapsed?
+  const timeUntil = (time: number) => {
     const eventDate = dayjs(dayjs.unix(time/1000))
     const currentDate = dayjs()
     const difference = eventDate.diff(currentDate, 'hour')
     if (difference > 0) {
-      return (difference + ' hours until event')
+      return (Math.floor(difference / 24) + ' days and ' + difference % 24 + ' hours until event')
     }
-    return ((difference * -1) + ' hours since event')
+    return (Math.floor(difference * -1 / 24) + ' days and ' + (difference % 24 * -1) + ' hours since event')
   }
 
   return (
@@ -76,11 +76,15 @@ const EventAccordion = ({ id, name, description, event_type, start_time, public_
           <Button variant='link' w='fit-content' colorScheme='teal'><Link href={public_url ?? private_url}>View Event</Link></Button>
           {related_events?.length !== 0 && <Box>
             <Text fontWeight={600} mb={2}>Related events</Text>
-            <Stack direction='row' gap={5}>
-              {related_events?.map((e: TEvent) => 
-                <CloseAccordion relatedId={e.id}><Link href={public_url ?? private_url}>{e.name}</Link></CloseAccordion>
+            <Wrap>
+              {related_events?.map((e: TEvent) =>
+                <WrapItem>
+                  <CloseAccordion relatedId={e.id}>
+                    <Link href={public_url ?? private_url}>{e.name}</Link>
+                  </CloseAccordion>
+                </WrapItem>
               )}
-            </Stack>
+            </Wrap>
           </Box>}
         </Stack>
       </AccordionPanel>

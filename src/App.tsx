@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react'
-import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuList, MenuItem, Spacer, Text, Tooltip, useMediaQuery, useToast } from '@chakra-ui/react'
+import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Spacer, Text, Tooltip, useDisclosure, useMediaQuery, useToast } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 
 import './styles/App.css'
 import LoginModal from './components/LoginModal'
+import LoginForm from './components/LoginForm'
 import UserMenu from './components/UserMenu'
 import EventAccordion from './components/EventAccordion'
 import TypingHeader from './components/TypingHeader'
@@ -14,11 +15,13 @@ function App() {
 
   const {user} = useContext(UserContext)
 
+  const [filter, setFilter] = useState<TEventType | null>()
   const [search, setSearch] = useState<string>('')
   const [events, setEvents] = useState<TEvent[]>([])
 
   const toast = useToast()
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)') // TODO: check if larger than... 400? and change font sizes
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     // loads events from api
@@ -34,13 +37,20 @@ function App() {
     setSearch(e.target.value)
   }
 
+  const parseEventType = (eventType: TEventType) => {
+    // returns event type in a proper case string
+    return eventType.split('_').join(' ').replace(/(^\w|\s\w)(\S*)/g, (_,m1,m2) => m1.toUpperCase()+m2.toLowerCase())
+  }
+
   return (
     <>
       <Container maxW='100%' bg='#509594'>
         <Container maxW='5xl' pt={10} cursor='default'>
           {user.loggedIn ?
             <UserMenu /> :
-            <LoginModal header='Hackathon Global' subheader='The place for all your hackathon needs!' />
+            <LoginModal openButton='Log In' header='Hackathon Global' subheader='The place for all your hackathon needs!' isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+              <LoginForm onClose={onClose} />
+            </LoginModal>
           }
           <TypingHeader text='Hack the North' />
           <motion.div whileHover={{ scale: 1.05 }}>
@@ -50,19 +60,27 @@ function App() {
       </Container>
       <Box className='spacer layer1'/>
       <Container maxW='5xl' mb={28}>
-        <Tooltip label='Log in to view more events!' placement='right'>
+        {user.loggedIn ? 
           <Text fontSize='2xl' fontWeight={600} mb={7} w='fit-content' cursor='default'>What's going on?</Text>
-        </Tooltip>
+          : <Tooltip label='Log in to view more events!' placement='right'>
+            <Text fontSize='2xl' fontWeight={600} mb={7} w='fit-content' cursor='default'>What's going on?</Text>
+          </Tooltip>
+        }
         <Flex mb={5}>
-          <Menu>
+          <Menu closeOnSelect={false}>
             <MenuButton as={Button}>
               <HStack>
-              <i className='ri-filter-line' />
+              <i className='ri-filter-fill' />
               <Text>{isLargerThan800 ? 'Filter by event type' : 'Filter'}</Text>
               </HStack>
             </MenuButton>
             <MenuList>
-              {/* TODO: implement event type filter (how to make it scalable?) */}
+              <MenuOptionGroup type='radio' defaultValue='none'>
+                {Object.values(TEventType).sort().map((event: TEventType) => (
+                  <MenuItemOption value={event} onClick={() => setFilter(event)}>{parseEventType(event)}</MenuItemOption>
+                ))}
+                <MenuItemOption value='none' onClick={() => setFilter(null)}>None</MenuItemOption>
+                </MenuOptionGroup>
             </MenuList>
           </Menu>
           <InputGroup w='40%' ml={5}>
@@ -86,7 +104,8 @@ function App() {
         <Accordion allowMultiple mb={10}>
           {events?.filter((event) => {
             return search.toLowerCase() === '' ? event : event.name.toLowerCase().includes(search)
-          }).map((event: TEvent) => (
+          }).filter((event) => filter ? event.event_type === filter : event)
+          .map((event: TEvent) => (
             user.loggedIn ?
               <EventAccordion key={event.id} id={event.id} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} related_events={event.related_events.map((e: number) => events[e-1])} />
               : event.permission === TPermission.PUBLIC &&
