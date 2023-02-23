@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuList, MenuItem, Spacer, Text, Tooltip } from '@chakra-ui/react'
+import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuList, MenuItem, Spacer, Text, Tooltip, useMediaQuery, useToast } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 
 import './styles/App.css'
@@ -7,17 +7,18 @@ import LoginModal from './components/LoginModal'
 import UserMenu from './components/UserMenu'
 import EventAccordion from './components/EventAccordion'
 import TypingHeader from './components/TypingHeader'
-import { TEvent, TPermission, SortingType } from './types/types'
+import { TEvent, TEventType, TPermission } from './types/types'
 import UserContext from './contexts/UserContext'
 
 function App() {
 
-  const {user, setUser} = useContext(UserContext)
+  const {user} = useContext(UserContext)
 
   const [search, setSearch] = useState<string>('')
   const [events, setEvents] = useState<TEvent[]>([])
-  const [filteredEvents, setFilteredEvents] = useState<TEvent[]>([])
-  const [sort, setSort] = useState<SortingType>(SortingType.DATE)
+
+  const toast = useToast()
+  const [isLargerThan800] = useMediaQuery('(min-width: 800px)') // TODO: check if larger than... 400? and change font sizes
 
   useEffect(() => {
     // loads events from api
@@ -25,19 +26,13 @@ function App() {
       const response = await fetch('https://api.hackthenorth.com/v3/events')
       // by default, orders events by start time
       setEvents((await response.json()).sort((a: TEvent, b: TEvent) => a.start_time - b.start_time))
-      setFilteredEvents(events)
     }
     loadEvents()
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
-    console.log(search, 'is search')
-    setFilteredEvents(events.filter((ev) => (ev.name.includes(search) || ev.event_type.toString().includes(search) || ev.start_time.toString().includes(search))))
-    console.log('filtering events', filteredEvents)
   }
-
-  // setFilteredEvents(filteredEvents.sort())
 
   return (
     <>
@@ -54,7 +49,7 @@ function App() {
         </Container>
       </Container>
       <Box className='spacer layer1'/>
-      <Container maxW='5xl'>
+      <Container maxW='5xl' mb={28}>
         <Tooltip label='Log in to view more events!' placement='right'>
           <Text fontSize='2xl' fontWeight={600} mb={7} w='fit-content' cursor='default'>What's going on?</Text>
         </Tooltip>
@@ -62,28 +57,36 @@ function App() {
           <Menu>
             <MenuButton as={Button}>
               <HStack>
-                <i className='ri-sort-desc' />
-                <Text>Sort Events</Text>
+              <i className='ri-filter-line' />
+              <Text>{isLargerThan800 ? 'Filter by event type' : 'Filter'}</Text>
               </HStack>
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={() => setSort(SortingType.NAME)}>Name</MenuItem>
-              <MenuItem onClick={() => setSort(SortingType.ACTIVITY)}>Activity</MenuItem>
-              <MenuItem onClick={() => setSort(SortingType.DATE)}>Date</MenuItem>
+              {/* TODO: implement event type filter (how to make it scalable?) */}
             </MenuList>
           </Menu>
-          <Spacer />
-          <InputGroup w='40%' mr={5}>
+          <InputGroup w='40%' ml={5}>
             <InputLeftElement
               pointerEvents='none'
               children={<i className='ri-search-line' />}
             />
-            <Input placeholder='Search by name, activity type, or date' value={search} onChange={handleChange} />
+            <Input placeholder='Search for an event' value={search} onChange={handleChange} />
           </InputGroup>
-          <Button size='md'>Generate schedule</Button>
+          <Spacer />
+          <Button size='md' onClick={() =>
+            toast({
+              title: 'Schedule created!',
+              description: 'Your download should be starting shortly.',
+              status: 'success',
+              variant: 'subtle',
+              isClosable: true
+            })
+          }>Generate schedule</Button>
         </Flex>
         <Accordion allowMultiple mb={10}>
-          {events?.map((event: TEvent) => (
+          {events?.filter((event) => {
+            return search.toLowerCase() === '' ? event : event.name.toLowerCase().includes(search)
+          }).map((event: TEvent) => (
             user.loggedIn ?
               <EventAccordion key={event.id} id={event.id} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} related_events={event.related_events.map((e: number) => events[e-1])} />
               : event.permission === TPermission.PUBLIC &&

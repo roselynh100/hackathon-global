@@ -15,7 +15,6 @@ const UserMenu = () => {
           </HStack>
         </MenuButton>
         <MenuList>
-          <MenuItem>Profile</MenuItem>
           <MenuItem onClick={() => setUser({ username: '', loggedIn: false })}>Log out</MenuItem>
         </MenuList>
       </Menu>

@@ -13,10 +13,10 @@ const LoginModal = ({ header, subheader }: ModalProps) => {
 
   return (
     <>
-    <Flex>
-      <Spacer />
-      <Button onClick={onOpen}>Log In</Button>
-    </Flex>
+      <Flex>
+        <Spacer />
+        <Button onClick={onOpen}>Log In</Button>
+      </Flex>
       <Modal isOpen={isOpen} onClose={onClose} size='md' isCentered>
         <ModalOverlay />
         <ModalContent py={5} px={2}>

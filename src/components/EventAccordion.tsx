@@ -1,4 +1,4 @@
-import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip, useAccordionItemState } from '@chakra-ui/react'
+import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip, useAccordionItemState, useMediaQuery } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import { TEvent } from '../types/types'
 
@@ -14,6 +14,8 @@ interface EventAccordionProps {
 }
 
 const EventAccordion = ({ id, name, description, event_type, start_time, public_url, private_url, related_events }: EventAccordionProps) => {
+
+  const [isLargerThan800] = useMediaQuery('(min-width: 800px)')
 
   const CloseAccordion = ({ children, relatedId }: { children: React.ReactNode, relatedId: number }) => {
     const { onClose } = useAccordionItemState()
@@ -34,7 +36,10 @@ const EventAccordion = ({ id, name, description, event_type, start_time, public_
   }
 
   const normalTime = (time: number) => {
-    return dayjs.unix(time/1000).format('ddd, DD MMM YYYY @ hh:mm A')
+    if (isLargerThan800) {
+      return dayjs.unix(time/1000).format('ddd, DD MMM YYYY @ hh:mm A')
+    }
+    return dayjs.unix(time/1000).format('DD/MM/YYYY hh:mm A')
   }
 
   const timeUntil = (time: number) => { // TODO: alternate between hours and days depending on time elapsed?
@@ -54,11 +59,11 @@ const EventAccordion = ({ id, name, description, event_type, start_time, public_
           <AccordionButton className={id.toString()} _expanded={{ color: 'teal' }} h={14}>
             <AccordionIcon mr={4} />
             <Flex width='100%'>
-              <Heading size='md' mr={4}>{name}</Heading>
-              <Code variant='subtle'>{event_type}</Code>
+              <Heading size='md' textAlign='left' mr={4}>{name}</Heading>
+              {isLargerThan800 && <Code variant='subtle'>{event_type}</Code>}
               <Spacer />
               <Tooltip label={timeUntil(start_time)}>
-                <Text mr={4}>{normalTime(start_time)}</Text>
+                <Text textAlign='right' mr={4}>{normalTime(start_time)}</Text>
               </Tooltip>
               <Checkbox size='lg' colorScheme='teal' />
             </Flex>
@@ -73,7 +78,7 @@ const EventAccordion = ({ id, name, description, event_type, start_time, public_
             <Text fontWeight={600} mb={2}>Related events</Text>
             <Stack direction='row' gap={5}>
               {related_events?.map((e: TEvent) => 
-                <CloseAccordion relatedId={e.id}><Link>{e.name}</Link></CloseAccordion>
+                <CloseAccordion relatedId={e.id}><Link href={public_url ?? private_url}>{e.name}</Link></CloseAccordion>
               )}
             </Stack>
           </Box>}
