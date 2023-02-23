@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react'
 import { Button, FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, ModalBody, ModalFooter, Stack } from '@chakra-ui/react'
+import { motion, useAnimationControls } from 'framer-motion'
 
 import UserContext from '../contexts/UserContext'
 
@@ -23,30 +24,49 @@ const LoginForm = () => {
     setTimeout(() => setLoading(false), 1000)
 
     if (formData.username.toString().toLowerCase() !== 'frontend' || formData.password !== 'hackthenorth') {
-      setTimeout(() => setIsError(true), 1000)
-      console.log('Bad! Throwing error!')
+      setTimeout(() => {
+        setIsError(true)
+        controls.start('start')
+      }, 1000)
+
       return
     }
     setTimeout(() => setUser({ username: formData.username, loggedIn: true }), 1000)
     console.log('Logging in!')
-    }
+  }
+
+  const variants = {
+    start: () => ({
+      x: [1, 6, -3, 0],
+      transition: {
+        duration: 0.2
+      }
+    })
+  }
+
+  const controls = useAnimationControls()
 
   return (
     <>
       <ModalBody>
         <FormControl isInvalid={isError}>
-          <Stack spacing={5}>
-            <Input name='username' placeholder='Username' size='md' onChange={handleChange} />
-            <InputGroup>
-              <Input name='password' placeholder='Password' type={show ? 'text' : 'password'} onChange={handleChange} />
-              <InputRightElement width='4.5rem'>
-                <Button variant='ghost' size='sm' onClick={handleClick}>
-                  {show ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-            {isError && <FormErrorMessage>Invalid credentials. Please try again.</FormErrorMessage>}
-          </Stack>
+          <motion.div
+            variants={variants}
+            animate={controls}
+          >
+            <Stack spacing={5}>
+              <Input name='username' id='username' placeholder='Username' size='md' onChange={handleChange} />
+              <InputGroup>
+                <Input name='password' id='password' placeholder='Password' type={show ? 'text' : 'password'} onChange={handleChange} />
+                <InputRightElement width='4.5rem'>
+                  <Button variant='ghost' size='sm' onClick={handleClick}>
+                    {show ? 'Hide' : 'Show'}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {isError && <FormErrorMessage>Invalid credentials. Please try again.</FormErrorMessage>}
+            </Stack>
+          </motion.div>
         </FormControl>
       </ModalBody>
       <ModalFooter>

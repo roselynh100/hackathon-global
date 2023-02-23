@@ -49,7 +49,7 @@ function App() {
           }
           <TypingHeader text='Hack the North' />
           <motion.div whileHover={{ scale: 1.05 }}>
-            <Heading size='xl' textAlign='center' mt={10} color='white'>— January 15-17, 2021 —</Heading>
+            <Heading size='xl' textAlign='center' mt={10} color='white'>January 15 - 17, 2021</Heading>
           </motion.div>
         </Container>
       </Container>
@@ -83,10 +83,11 @@ function App() {
           <Button size='md'>Generate schedule</Button>
         </Flex>
         <Accordion allowMultiple mb={10}>
-          {events?.map((event: TEvent, i) => (
+          {events?.map((event: TEvent) => (
             user.loggedIn ?
-              <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} />
-              : event.permission === TPermission.PUBLIC && <EventAccordion key={i} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} public_url={event.public_url} private_url={event.private_url} />
+              <EventAccordion key={event.id} id={event.id} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} related_events={event.related_events.map((e: number) => events[e-1])} />
+              : event.permission === TPermission.PUBLIC &&
+                <EventAccordion key={event.id} id={event.id} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} public_url={event.public_url} private_url={event.private_url} related_events={event.related_events?.filter((i: number) => events[i-1].permission === TPermission.PUBLIC).map((e: number) => events[e-1])} />
           ))}
         </Accordion>
       </Container>
