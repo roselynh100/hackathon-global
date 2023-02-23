@@ -4,8 +4,12 @@ import { motion, useAnimationControls } from 'framer-motion'
 
 import UserContext from '../contexts/UserContext'
 
-const LoginForm = () => {
-  const { user, setUser } = useContext(UserContext)
+interface LoginFormProps {
+  onClose: () => void
+}
+
+const LoginForm = ({ onClose }: LoginFormProps) => {
+  const { setUser } = useContext(UserContext)
 
   const [show, setShow] = useState<boolean>(false)
   const handleClick = () => setShow(!show)
@@ -28,11 +32,10 @@ const LoginForm = () => {
         setIsError(true)
         controls.start('start')
       }, 1000)
-
       return
     }
-    setTimeout(() => setUser({ username: formData.username, loggedIn: true }), 1000)
-    console.log('Logging in!')
+    setTimeout(() => onClose(), 1000)
+    setTimeout(() => setUser({ username: formData.username.toLowerCase(), loggedIn: true }), 1100)
   }
 
   const variants = {

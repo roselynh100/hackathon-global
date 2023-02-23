@@ -25,7 +25,7 @@ const LoginModal = ({ header, subheader }: ModalProps) => {
             <Heading fontSize='3xl' textAlign='center' color='teal'>{header}</Heading>
             <Text fontSize='md' textAlign='center' mt={2} mb={5}>{subheader}</Text>
           </ModalHeader>
-          <LoginForm />
+          <LoginForm onClose={onClose} />
         </ModalContent>
       </Modal>
     </>
