@@ -3,7 +3,7 @@ import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputG
 import { motion } from 'framer-motion'
 
 import './styles/App.css'
-import LoginModal from './components/LoginModal'
+import TModal from './components/TModal'
 import LoginForm from './components/LoginForm'
 import UserMenu from './components/UserMenu'
 import EventAccordion from './components/EventAccordion'
@@ -47,10 +47,16 @@ function App() {
       <Container maxW='100%' bg='#509594'>
         <Container maxW='5xl' pt={10} cursor='default'>
           {user.loggedIn ?
-            <UserMenu /> :
-            <LoginModal openButton='Log In' header='Hackathon Global' subheader='The place for all your hackathon needs!' isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
-              <LoginForm onClose={onClose} />
-            </LoginModal>
+            <UserMenu isOpen={isOpen} onOpen={onOpen} onClose={onClose} /> :
+              <>
+              <Flex>
+                <Spacer />
+                <Button onClick={onOpen}>Log In</Button>
+              </Flex>
+              <TModal header='Hackathon Global' subheader='The place for all your hackathon needs!' isOpen={isOpen} onClose={onClose}>
+                <LoginForm onClose={onClose} />
+              </TModal>
+            </>
           }
           <TypingHeader text='Hack the North' />
           <motion.div whileHover={{ scale: 1.05 }}>
