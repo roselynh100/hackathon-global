@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Accordion, Box, Button, Container, Flex, Heading, HStack, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Spacer, Text, Tooltip, useDisclosure, useMediaQuery, useToast } from '@chakra-ui/react'
+import { Accordion, Box, Button, Container, Flex, Heading, HStack, Image, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, Spacer, Text, Tooltip, useDisclosure, useMediaQuery, useToast } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 
 import './styles/App.css'
@@ -10,6 +10,8 @@ import EventAccordion from './components/EventAccordion'
 import TypingHeader from './components/TypingHeader'
 import { TEvent, TEventType, TPermission } from './types/types'
 import UserContext from './contexts/UserContext'
+import blob from './assets/blob.svg'
+import blob2 from './assets/blob2.svg'
 
 function App() {
 
@@ -65,7 +67,7 @@ function App() {
         </Container>
       </Container>
       <Box className='spacer layer1'/>
-      <Container maxW='5xl' mb={28}>
+      <Container maxW='5xl' minH='40vw' mb={20}>
         {user.loggedIn ? 
           <Text fontSize='2xl' fontWeight={600} mb={7} w='fit-content' cursor='default'>What's going on?</Text>
           : <Tooltip label='Log in to view more events!' placement='right'>
@@ -107,7 +109,7 @@ function App() {
             })
           }>Generate schedule</Button>
         </Flex>
-        <Accordion allowMultiple mb={10}>
+        <Accordion allowMultiple backgroundColor='rgba(355, 355, 355, 0.2)'>
           {events?.filter((event) => {
             return search.toLowerCase() === '' ? event : event.name.toLowerCase().includes(search)
           }).filter((event) => filter ? event.event_type === filter : event)
@@ -119,6 +121,24 @@ function App() {
           ))}
         </Accordion>
       </Container>
+      <Image 
+        src={blob}
+        position='absolute'
+        bottom={user.loggedIn ? 38 : -200}
+        left={-10}
+        w='40%'
+        opacity={0.4}
+        zIndex={-2}
+      />
+      <Image 
+        src={blob2}
+        position='absolute'
+        bottom={user.loggedIn ? '19%' : '-120'}
+        right='-200'
+        w='60%'
+        opacity={0.4}
+        zIndex={-2}
+      />
     </>
   )
 }
