@@ -25,9 +25,7 @@ $ npm start
 
 Hackathon Global should now be running locally at `http://localhost:3000/` :)
 
-## Development
-
-### Tech Stack
+## Tech Stack
 
 - React
 - TypeScript
@@ -35,7 +33,7 @@ Hackathon Global should now be running locally at `http://localhost:3000/` :)
 - Framer Motion
 - Netlify
 
-###
+## Important information
 
 When first launching the website, only the public events can be viewed. The private events are locked behind login credentials that are currently hard coded. Use the following information to log in:
 
