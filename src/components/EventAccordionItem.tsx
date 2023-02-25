@@ -74,7 +74,7 @@ const EventAccordionItem = ({ index, name, description, event_type, start_time, 
             <Wrap>
               {related_events?.map((e: TEvent) =>
                 <WrapItem>
-                  <Button variant='link' onClick={() => handleRelatedEventClick(e.id)}>{e.name}</Button>
+                  <Button variant='link' mr={5} onClick={() => handleRelatedEventClick(e.id)}>{e.name}</Button>
                 </WrapItem>
               )}
             </Wrap>
