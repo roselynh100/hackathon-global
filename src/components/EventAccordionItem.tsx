@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip, useAccordionContext, useMediaQuery, Wrap, WrapItem } from '@chakra-ui/react'
+import { AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Button, Checkbox, Code, Flex, Heading, Link, Spacer, Stack, Text, Tooltip, useMediaQuery, Wrap, WrapItem } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import UserContext from '../contexts/UserContext'
 import { TEvent } from '../types/types'
@@ -18,7 +18,6 @@ interface EventAccordionItemProps {
 const EventAccordionItem = ({ index, name, description, event_type, start_time, public_url, private_url, related_events }: EventAccordionItemProps) => {
 
   const { user } = useContext(UserContext)
-  const { getAccordionItemProps } = useAccordionContext()
 
   const [isLargerThan800] = useMediaQuery('(min-width: 800px)')
 
@@ -38,16 +37,6 @@ const EventAccordionItem = ({ index, name, description, event_type, start_time, 
     }
     return (Math.floor(difference * -1 / 24) + ' days and ' + (difference % 24 * -1) + ' hours since event')
   }
-
-  const handleRelatedEventClick = (id: number) => {
-  
-    // const index = related_events?.findIndex((event) => event.id === itemId);
-
-    // getAccordionItemProps(index).onChange(true)
-  
-  }
-
-  console.log('my key is', index, 'and my thing is', name)
 
   return (
     <AccordionItem key={index}>
@@ -74,12 +63,11 @@ const EventAccordionItem = ({ index, name, description, event_type, start_time, 
             <Wrap>
               {related_events?.map((e: TEvent) =>
                 <WrapItem>
-                  <Button variant='link' mr={5} onClick={() => handleRelatedEventClick(e.id)}>{e.name}</Button>
+                  <Button variant='link' mr={5}><Link href={e.public_url ?? e.private_url}>{e.name}</Link></Button>
                 </WrapItem>
               )}
             </Wrap>
           </Box>}
-          <Button onClick={() => getAccordionItemProps(0).onChange(true)}>click me and open one</Button>
         </Stack>
       </AccordionPanel>
     </AccordionItem>
