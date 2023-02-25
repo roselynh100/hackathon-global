@@ -6,7 +6,7 @@ import './styles/App.css'
 import TModal from './components/TModal'
 import LoginForm from './components/LoginForm'
 import UserMenu from './components/UserMenu'
-import EventAccordion from './components/EventAccordion'
+import EventAccordionItem from './components/EventAccordionItem'
 import TypingHeader from './components/TypingHeader'
 import { TEvent, TEventType, TPermission } from './types/types'
 import UserContext from './contexts/UserContext'
@@ -40,7 +40,7 @@ function App() {
   }
 
   const parseEventType = (eventType: TEventType) => {
-    // returns event type in a proper case string
+    // returns event type in a proper case string - used in filtering options
     return eventType.split('_').join(' ').replace(/(^\w|\s\w)(\S*)/g, (_,m1,m2) => m1.toUpperCase()+m2.toLowerCase())
   }
 
@@ -83,11 +83,11 @@ function App() {
               </HStack>
             </MenuButton>
             <MenuList>
-              <MenuOptionGroup type='radio' defaultValue='none'>
+              <MenuOptionGroup type='radio' defaultValue='showAll'>
+                <MenuItemOption value='showAll' onClick={() => setFilter(null)}>Show All</MenuItemOption>
                 {Object.values(TEventType).sort().map((event: TEventType) => (
                   <MenuItemOption value={event} onClick={() => setFilter(event)}>{parseEventType(event)}</MenuItemOption>
                 ))}
-                <MenuItemOption value='none' onClick={() => setFilter(null)}>None</MenuItemOption>
                 </MenuOptionGroup>
             </MenuList>
           </Menu>
@@ -99,7 +99,7 @@ function App() {
             <Input placeholder='Search for an event' value={search} onChange={handleChange} />
           </InputGroup>
           <Spacer />
-          <Button size='md' onClick={() =>
+          {user.loggedIn && <Button size='md' onClick={() =>
             toast({
               title: 'Schedule created!',
               description: 'Your download should be starting shortly.',
@@ -107,17 +107,36 @@ function App() {
               variant: 'subtle',
               isClosable: true
             })
-          }>Generate schedule</Button>
+          }>Generate schedule</Button>}
         </Flex>
         <Accordion allowMultiple backgroundColor='rgba(355, 355, 355, 0.2)'>
-          {events?.filter((event) => {
+          {events?.filter((event: TEvent) => {
             return search.toLowerCase() === '' ? event : event.name.toLowerCase().includes(search)
-          }).filter((event) => filter ? event.event_type === filter : event)
+          }).filter((event: TEvent) => filter ? event.event_type === filter : event)
           .map((event: TEvent) => (
             user.loggedIn ?
-              <EventAccordion key={event.id} id={event.id} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} private_url={event.private_url} related_events={event.related_events.map((e: number) => events[e-1])} />
-              : event.permission === TPermission.PUBLIC &&
-                <EventAccordion key={event.id} id={event.id} name={event.name} description={event.description} event_type={event.event_type} start_time={event.start_time} public_url={event.public_url} private_url={event.private_url} related_events={event.related_events?.filter((i: number) => events[i-1].permission === TPermission.PUBLIC).map((e: number) => events[e-1])} />
+              <EventAccordionItem key={event.id} index={event.id}
+              name={event.name}
+              description={event.description}
+              event_type={event.event_type}
+              start_time={event.start_time}
+              private_url={event.private_url}
+              related_events={
+                event.related_events?.map((e: number) => events.find((x: TEvent) => x.id === e) as TEvent)
+              } />
+            : event.permission === TPermission.PUBLIC &&
+              <EventAccordionItem key={event.id} index={event.id}
+              name={event.name}
+              description={event.description}
+              event_type={event.event_type}
+              start_time={event.start_time}
+              public_url={event.public_url}
+              private_url={event.private_url}
+              related_events={
+                event.related_events?.filter(
+                  (eventId: number) => events.find((x: TEvent) => x.id === eventId && x.permission === TPermission.PUBLIC)
+                ).map((eventId: number) => events.find((x: TEvent) => x.id === eventId) as TEvent)
+              } />
           ))}
         </Accordion>
       </Container>
